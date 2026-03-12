@@ -1,0 +1,59 @@
+jwt:
+  secret: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        # User Service (Login/Register üçün filtr lazım deyil)
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/**
+          filters:
+            - RewritePath=/user/(?<segment>.*), /$\{segment}
+
+#        # Order Service (Bura filtr lazımdır!)
+#        - id: order-service
+#          uri: lb://ORDER-SERVICE
+#          predicates:
+#            - Path=/order-service/**
+#          filters:
+#            - AuthenticationFilter # Yuxarıda yazdığımız klassın adı
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+  application:
+    name: gateway
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8765
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+springdoc:
+  swagger-ui:
+    # Bu hissə Swagger menyusunda aşağı açılan siyahını yaradır
+    urls:
+      - name: "User Service"
+        url: /user/v3/api-docs
+#      - name: "Order Service"
+#        url: /order-service/v3/api-docs
+#      - name: "Payment Service"
+#        url: /payment-service/v3/api-docs
+  # Gateway-in öz endpointlərini göstərmək istəmirsinizsə:
+  api-docs:
+    enabled: true
+
+
