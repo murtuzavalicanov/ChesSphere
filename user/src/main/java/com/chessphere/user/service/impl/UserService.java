@@ -1,6 +1,5 @@
 package com.chessphere.user.service.impl;
 
-import com.chessphere.user.configuration.SecurityConfig;
 import com.chessphere.user.dto.UserRequestDto;
 import com.chessphere.user.dto.UserResponseDto;
 import com.chessphere.user.entity.UserEntity;
@@ -45,6 +44,7 @@ public class UserService implements UserServiceInter {
         UserEntity userEntity = UserEntity.builder()
                 .username(userRequestDto.getUsername())
                 .email(userRequestDto.getEmail())
+                .password(passwordEncoder.encode(userRequestDto.getPassword()))
                 .build();
         userRepo.save(userEntity);
     }

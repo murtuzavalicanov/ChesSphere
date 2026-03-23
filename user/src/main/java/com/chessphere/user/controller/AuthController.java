@@ -1,8 +1,10 @@
 package com.chessphere.user.controller;
 
+import com.chessphere.user.dto.ApiResponse;
 import com.chessphere.user.dto.UserRequestDto;
 import com.chessphere.user.service.inter.AuthServiceInter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<?> login(@RequestBody UserRequestDto userRequestDto) {
         return authService.login(userRequestDto);
     }
 }
