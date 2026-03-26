@@ -10,7 +10,6 @@ import com.chessphere.user.service.inter.AuthServiceInter;
 import com.chessphere.user.util.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,6 +17,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -59,11 +61,13 @@ public class AuthService implements AuthServiceInter {
     @Override
     public void register(UserRequestDto userRequestDto) {
         UserEntity userEntity=new UserEntity();
+        List<String> roles=new ArrayList<>();
+        roles.add(Role.USER);
         userEntity.setUsername(userRequestDto.getUsername());
         userEntity.setEmail(userRequestDto.getEmail());
         String password = passwordEncoder.encode(userRequestDto.getPassword());
         userEntity.setPassword(password);
-        userEntity.setRole(Role.USER);
+        userEntity.setRoles(roles);
         userRepo.save(userEntity);
     }
 }

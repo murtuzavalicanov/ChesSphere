@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -25,5 +26,5 @@ public class UserEntity {
     private String username;
     private String email;
     private String password;
-    private String role;
+    private List<String> roles;
 }

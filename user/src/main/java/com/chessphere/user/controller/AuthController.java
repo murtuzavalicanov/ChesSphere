@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
     private AuthServiceInter authService;
 
     //    Register
-    @PostMapping("/auth/register")
+    @PostMapping("/register")
     public String registerUser(@RequestBody UserRequestDto userRequestDto) {
         authService.register(userRequestDto);
         return "User registered successfully";

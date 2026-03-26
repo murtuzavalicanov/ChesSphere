@@ -17,7 +17,7 @@ public class UserController {
     private UserServiceInter userService;
 
 //    CRUD
-    @GetMapping
+    @GetMapping("/users")
     public List<UserResponseDto> getAllUsers() {
         return userService.getUsers();
     }

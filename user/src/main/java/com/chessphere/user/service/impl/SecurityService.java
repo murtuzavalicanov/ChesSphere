@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +28,9 @@ public class SecurityService implements UserDetailsService {
         return new User(user.getUsername(), user.getPassword(), getAuthorities(user));
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(UserEntity usersEntity) {
-        String roles = usersEntity.getRole();
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(roles));
-        return authorities;
+    private Collection<? extends GrantedAuthority> getAuthorities(UserEntity userEntity) {
+        return userEntity.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role)) // Hər bir string rolunu Authority-yə çeviririk
+                .collect(Collectors.toList());
     }
 }
