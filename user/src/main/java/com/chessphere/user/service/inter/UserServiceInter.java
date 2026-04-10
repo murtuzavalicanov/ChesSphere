@@ -16,4 +16,6 @@ public interface UserServiceInter {
     void deleteUser(UUID uuid);
 
     void updateUser(UUID id, UserRequestDto userRequestDto);
+
+    UserResponseDto getUserByUsername(String loggedInUser);
 }

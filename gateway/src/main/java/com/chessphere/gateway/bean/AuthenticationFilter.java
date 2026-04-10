@@ -32,15 +32,25 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         return -1; // Spring Security-dən sonra, amma digər filterlərdən əvvəl
     }
 
+    private static final List<String> EXCLUDED_URLS = List.of(
+            "/user/auth/",
+            "/user/v3/api-docs",
+            "/aggregate/",
+            "/v3/api-docs",
+            "/swagger-ui",
+            "/swagger-ui.html",
+            "/swagger-ui/index.html",
+            "/webjars"
+    );
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
         // Açıq endpoint-lər üçün filtri keç
         String path = request.getURI().getPath();
-        if (
-                path.startsWith("/user/auth/")
-                        || path.startsWith("/v3/api-docs")) {
+        boolean isApiDocRequest = EXCLUDED_URLS.stream().anyMatch(path::contains);
+        if (isApiDocRequest) {
             return chain.filter(exchange);
         }
 

@@ -18,9 +18,6 @@ public class SecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-//                        // Login və Register hamı üçün açıqdır
-//                        .pathMatchers("/user/auth/**", "/user/login", "/v3/api-docs/**").permitAll()
-//                        // Qalan bütün sorğular mütləq tokenlə (authenticated) olmalıdır
                         .anyExchange().permitAll()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,10 +28,10 @@ public class UserService implements UserServiceInter {
 
     @Override
     public List<UserResponseDto> getUsers() {
-        List<UserEntity> users= userRepo.findAll();
+        List<UserEntity> users = userRepo.findAll();
         List<UserResponseDto> userResponseDtos = new ArrayList<>();
-        for(UserEntity user:users){
-            UserResponseDto userResponseDto=UserResponseDto.builder()
+        for (UserEntity user : users) {
+            UserResponseDto userResponseDto = UserResponseDto.builder()
                     .username(user.getUsername())
                     .email(user.getEmail())
                     .build();
@@ -73,5 +74,12 @@ public class UserService implements UserServiceInter {
         userRepo.save(userDb);
     }
 
-
+    @Override
+    public UserResponseDto getUserByUsername(String loggedInUser) {
+        Optional<UserEntity> user = userRepo.findByUsername(loggedInUser);
+        return UserResponseDto.builder()
+                .username(user.get().getUsername())
+                .email(user.get().getEmail())
+                .build();
+    }
 }

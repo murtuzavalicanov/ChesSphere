@@ -3,28 +3,28 @@ jwt:
 
 spring:
   application:
-    name: user
+    name: match
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: 12345
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
 
 server:
-  port: 8080
+  port: 8081
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    csrf:
-      enabled: false
+#springdoc:
+#  api-docs:
+#    path: /v3/api-docs
+#  swagger-ui:
+#    csrf:
+#      enabled: false
 

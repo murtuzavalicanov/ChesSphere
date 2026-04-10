@@ -4,6 +4,8 @@ import com.chessphere.user.dto.UserRequestDto;
 import com.chessphere.user.dto.UserResponseDto;
 import com.chessphere.user.service.inter.UserServiceInter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,13 +18,20 @@ public class UserController {
     @Autowired
     private UserServiceInter userService;
 
+    @GetMapping("/me")
+    public UserResponseDto getCurrentUser(
+            @RequestHeader("loggedInUser") String loggedInUser
+    ) {
+        return userService.getUserByUsername(loggedInUser);
+    }
+
 //    CRUD
     @GetMapping("/users")
     public List<UserResponseDto> getAllUsers() {
         return userService.getUsers();
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public String saveUser(@RequestBody UserRequestDto userRequestDto) {
         userService.saveUser(userRequestDto);
         return "User saved successfully";
