@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fa3724ff-93bc-4ce5-ac51-78f96e1a57c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/service/impl/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/match/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/match/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/service/impl/MatchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/service/impl/MatchService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/match/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/match/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +46,7 @@
   &quot;keyToString&quot;: {
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
@@ -65,19 +69,6 @@
     ]
   }
 }</component>
-  <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="ChesSphere" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="ChesSphere" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
-  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -101,6 +92,9 @@
       <workItem from="1767555372112" duration="307000" />
       <workItem from="1772837861470" duration="32000" />
       <workItem from="1772844136545" duration="50000" />
+      <workItem from="1776409841762" duration="2612000" />
+      <workItem from="1776507875330" duration="1108000" />
+      <workItem from="1776509268177" duration="595000" />
     </task>
     <servers />
   </component>

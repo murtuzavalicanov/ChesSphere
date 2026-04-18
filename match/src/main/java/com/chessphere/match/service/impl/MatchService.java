@@ -1,6 +1,8 @@
 package com.chessphere.match.service.impl;
 
+import com.chessphere.match.dto.MatchRequestDto;
 import com.chessphere.match.entity.MatchEntity;
+import com.chessphere.match.message.producer.MatchProducer;
 import com.chessphere.match.repository.MatchRepo;
 import com.chessphere.match.service.inter.MatchServiceInter;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.UUID;
 public class MatchService implements MatchServiceInter {
 
    private final MatchRepo matchRepo;
+   private final MatchProducer matchProducer;
 
     @Override
     public ResponseEntity<?> getUserMatches(UUID userId) {
@@ -45,6 +48,12 @@ public class MatchService implements MatchServiceInter {
             requestedMatch.setBlackPlayerId(userId);
         }
         createMatch(requestedMatch);
+        matchProducer.sendMatchCreatedEvent(new MatchRequestDto(
+                requestedMatch.getId(),
+                requestedMatch.getWhitePlayerId(),
+                requestedMatch.getBlackPlayerId(),
+                requestedMatch.getGameType()
+        ));
         log.info("ActionLog.requestMatch.saved.match: " + requestedMatch);
     }
 }
