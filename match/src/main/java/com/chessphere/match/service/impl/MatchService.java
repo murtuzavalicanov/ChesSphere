@@ -2,6 +2,8 @@ package com.chessphere.match.service.impl;
 
 import com.chessphere.match.dto.MatchRequestDto;
 import com.chessphere.match.entity.MatchEntity;
+import com.chessphere.match.mapper.MatchMapper;
+import com.chessphere.match.message.dto.MatchCreatedEvent;
 import com.chessphere.match.message.producer.MatchProducer;
 import com.chessphere.match.repository.MatchRepo;
 import com.chessphere.match.service.inter.MatchServiceInter;
@@ -20,6 +22,7 @@ public class MatchService implements MatchServiceInter {
 
    private final MatchRepo matchRepo;
    private final MatchProducer matchProducer;
+   private final MatchMapper matchMapper;
 
     @Override
     public ResponseEntity<?> getUserMatches(UUID userId) {
@@ -40,20 +43,15 @@ public class MatchService implements MatchServiceInter {
     }
 
     @Override
-    public void requestMatch(UUID userId, MatchEntity requestedMatch) {
-        log.info("ActionLog.requestMatch.started.userId: " + userId+" match: "+requestedMatch.toString());
-        if (requestedMatch.getWhitePlayerId()==null) {
-            requestedMatch.setWhitePlayerId(userId);
-        }else {
-            requestedMatch.setBlackPlayerId(userId);
-        }
-        createMatch(requestedMatch);
-        matchProducer.sendMatchCreatedEvent(new MatchRequestDto(
-                requestedMatch.getId(),
-                requestedMatch.getWhitePlayerId(),
-                requestedMatch.getBlackPlayerId(),
-                requestedMatch.getGameType()
-        ));
-        log.info("ActionLog.requestMatch.saved.match: " + requestedMatch);
+    public void requestMatch(UUID senderId, UUID recipientId, MatchRequestDto requestedMatchDto) {
+        log.info("ActionLog.requestMatch.started.sender: "+ senderId
+                + " recipient: " + recipientId
+                + " match: " + requestedMatchDto.toString());
+        MatchEntity matchEntity = matchMapper.toEntity(senderId, recipientId, requestedMatchDto);
+        createMatch(matchEntity);
+
+        MatchCreatedEvent matchCreatedEvent = matchMapper.toMatchCreatedEvent(senderId, recipientId, requestedMatchDto);
+        matchProducer.sendMatchCreatedEvent(matchCreatedEvent);
+        log.info("ActionLog.requestMatch.saved.match: " + matchEntity.toString());
     }
 }

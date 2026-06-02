@@ -1,0 +1,22 @@
+services:
+  notification-service:
+    build: .
+    container_name: notification-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      # IMPORTANT: Point to the Eureka container name
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - chesphere-shared-net
+
+networks:
+  chesphere-shared-net:
+    external: true

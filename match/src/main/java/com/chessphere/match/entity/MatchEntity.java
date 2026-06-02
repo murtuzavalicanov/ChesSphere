@@ -4,7 +4,7 @@ import com.chessphere.match.enums.GameType;
 import com.chessphere.match.enums.MatchResult;
 import com.chessphere.match.enums.MatchStatus;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
@@ -12,6 +12,9 @@ import java.util.UUID;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class MatchEntity {
     @Id
     @GeneratedValue
@@ -20,6 +23,8 @@ public class MatchEntity {
 
     private UUID whitePlayerId;
     private UUID blackPlayerId;
+    private UUID senderId;
+    private UUID recipientId;
 
     @Enumerated(EnumType.STRING)
     private GameType gameType;

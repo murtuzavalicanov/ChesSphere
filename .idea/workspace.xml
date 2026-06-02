@@ -6,9 +6,27 @@
   <component name="ChangeListManager">
     <list default="true" id="fa3724ff-93bc-4ce5-ac51-78f96e1a57c1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/eureka/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/com/chessphere/gateway/bean/AuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/java/com/chessphere/gateway/bean/AuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/com/chessphere/gateway/configuration/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/java/com/chessphere/gateway/configuration/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/com/chessphere/gateway/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/java/com/chessphere/gateway/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/resources/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/match/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/match/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/controller/MatchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/controller/MatchController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/dto/MatchRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/dto/MatchRequestDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/entity/MatchEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/entity/MatchEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/message/dto/MatchCreatedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/message/dto/MatchCreatedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/message/producer/MatchProducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/message/producer/MatchProducer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/service/impl/MatchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/service/impl/MatchService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/match/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/match/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/service/inter/MatchServiceInter.java" beforeDir="false" afterPath="$PROJECT_DIR$/match/src/main/java/com/chessphere/match/service/inter/MatchServiceInter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/service/impl/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/service/impl/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/service/impl/SecurityService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/service/impl/SecurityService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/service/impl/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/service/impl/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/user/src/main/java/com/chessphere/user/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/user/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,6 +113,17 @@
       <workItem from="1776409841762" duration="2612000" />
       <workItem from="1776507875330" duration="1108000" />
       <workItem from="1776509268177" duration="595000" />
+      <workItem from="1776513095886" duration="592000" />
+      <workItem from="1776618865247" duration="341000" />
+      <workItem from="1776619501187" duration="733000" />
+      <workItem from="1776772547431" duration="923000" />
+      <workItem from="1776851183496" duration="123000" />
+      <workItem from="1776852255416" duration="3819000" />
+      <workItem from="1776876526658" duration="1466000" />
+      <workItem from="1777013657983" duration="3895000" />
+      <workItem from="1777017894948" duration="738000" />
+      <workItem from="1780317403354" duration="2414000" />
+      <workItem from="1780398452797" duration="313000" />
     </task>
     <servers />
   </component>

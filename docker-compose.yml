@@ -1,13 +1,17 @@
-version: '3.8'
-
 services:
+  # ===================== ZOOKEEPER =====================
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - chesphere-shared-net
 
+  # ===================== KAFKA =====================
   kafka:
     image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -15,15 +19,19 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
+      # Docker daxili servislər kafka:29092 ilə, kənardan qoşulanlar localhost:9092 ilə bağlanacaq
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
-
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - chesphere-shared-net
+
+  # ===================== KAFKA UI =====================
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
     depends_on:
       - kafka
     ports:
@@ -31,3 +39,30 @@ services:
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    networks:
+      - chesphere-shared-net
+
+  # ===================== EUREKA SERVER =====================
+  eureka-server:
+    build: ./eureka
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - chesphere-shared-net
+
+  # ===================== API GATEWAY =====================
+  api-gateway:
+    build: ./gateway
+    container_name: api-gateway
+    ports:
+      - "8765:8765"
+    depends_on:
+      - eureka-server
+      - kafka
+    networks:
+      - chesphere-shared-net
+
+networks:
+  chesphere-shared-net:
+    external: true

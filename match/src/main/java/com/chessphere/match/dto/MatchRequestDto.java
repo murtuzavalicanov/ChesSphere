@@ -1,6 +1,7 @@
 package com.chessphere.match.dto;
 
 import com.chessphere.match.enums.GameType;
+import com.chessphere.match.enums.MatchStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,5 @@ public class MatchRequestDto {
     private UUID whitePlayerId;
     private UUID blackPlayerId;
     private GameType gameType;
+    private MatchStatus matchStatus;
 }

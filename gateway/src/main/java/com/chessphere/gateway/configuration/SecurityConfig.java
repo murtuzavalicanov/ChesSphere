@@ -1,5 +1,8 @@
 package com.chessphere.gateway.configuration;
 
+import com.chessphere.gateway.bean.AuthenticationFilter;
+import com.chessphere.gateway.util.JwtUtil;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -27,5 +30,12 @@ public class SecurityConfig {
                         })
                 )
                 .build();
+    }
+
+    @Bean
+    public GlobalFilter authenticationFilter(JwtUtil jwtUtil) {
+        AuthenticationFilter filter = new AuthenticationFilter();
+        filter.setJwtUtil(jwtUtil); // Əgər sahə (field) privatdırsa, bura üçün filter classına setter əlavə edə bilərsiniz və ya konstruktor istifadə edə bilərsiniz.
+        return filter;
     }
 }

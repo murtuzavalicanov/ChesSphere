@@ -1,5 +1,6 @@
 package com.chessphere.match.service.inter;
 
+import com.chessphere.match.dto.MatchRequestDto;
 import com.chessphere.match.entity.MatchEntity;
 import org.springframework.http.ResponseEntity;
 
@@ -11,5 +12,5 @@ public interface MatchServiceInter {
 
     void createMatch(MatchEntity match);
 
-    void requestMatch(UUID userId, MatchEntity match);
+    void requestMatch(UUID senderId, UUID recipientId, MatchRequestDto match);
 }

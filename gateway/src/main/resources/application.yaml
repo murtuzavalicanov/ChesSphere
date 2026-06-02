@@ -1,30 +1,31 @@
-jwt:
-  secret: "Z3VndXN0YXZvMTIzNDU2Nzg5MGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6MTIzNDU2Nzg5MA=="
+server:
+  port: 8765
 
 spring:
+  application:
+    name: api-gateway
   cloud:
     gateway:
-      routes:
-        # User Service (Login/Register üçün filtr lazım deyil)
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/user/**
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
-  application:
-    name: gateway
+      routes:
+        - id: user-service
+          uri: lb://USER
+          predicates:
+            - Path=/user/**
 
+jwt:
+  secret: "Z3VndXN0YXZvMTIzNDU2Nzg5MGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6MTIzNDU2Nzg5MA=="
 
 eureka:
   client:
+    fetch-registry: true
+    register-with-eureka: true
+    registry-fetch-interval-seconds: 5
     service-url:
-      defaultZone: http://localhost:8761/eureka
-
-server:
-  port: 8765
+      defaultZone: http://eureka-server:8761/eureka/
 
 management:
   endpoints:
@@ -34,12 +35,8 @@ management:
 
 springdoc:
   swagger-ui:
-    # Bu hissə Swagger menyusunda aşağı açılan siyahını yaradır
     urls:
       - name: "User Service"
         url: /user/v3/api-docs
-  # Gateway-in öz endpointlərini göstərmək istəmirsinizsə:
   api-docs:
     enabled: true
-
-

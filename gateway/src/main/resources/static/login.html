@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChessMate — Daxil ol</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1f1f1f;
+    --border: #2a2a2a;
+    --border2: #3a3a3a;
+    --text: #f0ece4;
+    --muted: #888;
+    --accent: #c9a84c;
+    --accent-dim: rgba(201,168,76,0.15);
+    --accent-hover: #d4b560;
+    --error: #e05252;
+    --success: #5bba6f;
+    --radius: 12px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* Left Panel */
+  .panel-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .board-bg {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  .board-bg div:nth-child(odd) { background: #c9a84c; }
+  .board-bg div:nth-child(even) { background: transparent; }
+
+  .board-wrapper {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .logo-symbol {
+    font-size: 80px;
+    line-height: 1;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 40px rgba(201,168,76,0.4));
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    color: var(--accent);
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+
+  .brand-tagline {
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .decorative-line {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--accent), transparent);
+    margin: 24px auto;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 2px;
+  }
+
+  /* Right Panel */
+  .panel-right {
+    width: 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 48px;
+    background: var(--bg);
+    border-left: 1px solid var(--border);
+  }
+
+  .form-header {
+    width: 100%;
+    margin-bottom: 36px;
+  }
+
+  .form-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .form-header p {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .tab-switcher {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 4px;
+    margin-bottom: 32px;
+    width: 100%;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: #1a1200;
+  }
+
+  form { width: 100%; }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .field input {
+    width: 100%;
+    padding: 13px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+
+  .field input::placeholder { color: #444; }
+
+  .field-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .field-row label {
+    margin-bottom: 0;
+  }
+
+  .forgot-link {
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .forgot-link:hover { text-decoration: underline; }
+
+  .error-msg {
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 4px;
+    display: none;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    color: #1a1200;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn:hover { background: var(--accent-hover); }
+  .submit-btn:active { transform: scale(0.99); }
+
+  .submit-btn.loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 22px 0;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .divider span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .oauth-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .oauth-btn {
+    flex: 1;
+    padding: 11px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .oauth-btn:hover {
+    border-color: var(--border2);
+    background: var(--surface2);
+  }
+
+  .register-section { display: none; }
+
+  .terms {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  .terms a { color: var(--accent); text-decoration: none; }
+
+  .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 999;
+  }
+
+  .notification.success {
+    background: rgba(91,186,111,0.15);
+    border: 1px solid rgba(91,186,111,0.4);
+    color: var(--success);
+  }
+
+  .notification.error {
+    background: rgba(224,82,82,0.15);
+    border: 1px solid rgba(224,82,82,0.4);
+    color: var(--error);
+  }
+
+  .notification.show { transform: translateX(0); }
+
+  @media (max-width: 768px) {
+    .panel-left { display: none; }
+    .panel-right { width: 100%; padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="panel-left">
+  <div class="board-bg" id="boardBg"></div>
+  <div class="board-wrapper">
+    <div class="logo-symbol">♛</div>
+    <div class="brand-name">ChessMate</div>
+    <div class="brand-tagline">Şahmat platforması</div>
+    <div class="decorative-line"></div>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num">12K+</div>
+        <div class="stat-label">Oyunçu</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">850K</div>
+        <div class="stat-label">Oyun</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">98</div>
+        <div class="stat-label">Ölkə</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel-right">
+  <div class="form-header">
+    <h2>Xoş gəlmisiniz</h2>
+    <p>Hesabınıza daxil olun və ya yeni hesab yaradın</p>
+  </div>
+
+  <div class="tab-switcher">
+    <button class="tab-btn active" onclick="switchTab('login')">Daxil ol</button>
+    <button class="tab-btn" onclick="switchTab('register')">Qeydiyyat</button>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <form id="loginForm" onsubmit="handleLogin(event)">
+    <div class="field">
+      <label>İstifadəçi adı / E-mail</label>
+      <input type="text" id="loginUsername" placeholder="username@mail.com" required />
+      <div class="error-msg" id="loginUsernameError">Bu sahə boş ola bilməz</div>
+    </div>
+    <div class="field">
+      <div class="field-row">
+        <label>Şifrə</label>
+        <a class="forgot-link" onclick="handleForgotPassword()">Şifrəni unutdun?</a>
+      </div>
+      <input type="password" id="loginPassword" placeholder="••••••••" required />
+      <div class="error-msg" id="loginPasswordError">Şifrə ən az 6 simvol olmalıdır</div>
+    </div>
+    <button type="submit" class="submit-btn" id="loginBtn">Daxil ol</button>
+  </form>
+
+  <!-- REGISTER FORM -->
+  <form id="registerForm" class="register-section" onsubmit="handleRegister(event)">
+    <div class="field">
+      <label>İstifadəçi adı</label>
+      <input type="text" id="regUsername" placeholder="chessgrandmaster" required />
+    </div>
+    <div class="field">
+      <label>E-mail</label>
+      <input type="email" id="regEmail" placeholder="username@mail.com" required />
+    </div>
+    <div class="field">
+      <label>Şifrə</label>
+      <input type="password" id="regPassword" placeholder="••••••••" required />
+    </div>
+    <div class="field">
+      <label>Şifrəni təsdiqlə</label>
+      <input type="password" id="regPasswordConfirm" placeholder="••••••••" required />
+      <div class="error-msg" id="regPasswordError">Şifrələr uyğun gəlmir</div>
+    </div>
+    <button type="submit" class="submit-btn" id="registerBtn">Qeydiyyatdan keç</button>
+    <p class="terms">
+      Qeydiyyatdan keçməklə <a href="#">İstifadə Şərtlərini</a> və <a href="#">Məxfilik Siyasətini</a> qəbul edirsiniz.
+    </p>
+  </form>
+
+  <div class="divider"><span>ya da</span></div>
+
+  <div class="oauth-row">
+    <!-- 🔌 API: Google OAuth → GET /api/auth/google -->
+    <button class="oauth-btn" onclick="oauthLogin('google')">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Google
+    </button>
+    <!-- 🔌 API: GitHub OAuth → GET /api/auth/github -->
+    <button class="oauth-btn" onclick="oauthLogin('github')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </button>
+  </div>
+</div>
+
+<div class="notification" id="notification"></div>
+
+<script>
+  // Checkerboard background
+  const bg = document.getElementById('boardBg');
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const cell = document.createElement('div');
+      if ((r + c) % 2 === 0) cell.style.background = '#c9a84c';
+      bg.appendChild(cell);
+    }
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+    });
+    document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+    document.querySelector('.divider').style.display = 'flex';
+    document.querySelector('.oauth-row').style.display = 'flex';
+  }
+
+  function showNotification(msg, type = 'success') {
+    const el = document.getElementById('notification');
+    el.textContent = msg;
+    el.className = `notification ${type}`;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3500);
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const btn = document.getElementById('loginBtn');
+
+    if (!username || !password) {
+      showNotification('Bütün sahələri doldurun', 'error');
+      return;
+    }
+
+    btn.textContent = 'Yüklənir...';
+    btn.disabled = true;
+
+    try {
+      // 🔌 API: POST /user/auth/login
+      // Body: { username, password }
+      // Response: { token, user: { id, username, rating, avatar } }
+      // Uğurlu cavabda: localStorage.setItem('token', response.token)
+      // Sonra: window.location.href = '/dashboard.html'
+      const response = await fetch('/user/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Giriş uğursuz oldu');
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      showNotification('Uğurla daxil oldunuz!');
+      setTimeout(() => window.location.href = '/dashboard.html', 1000);
+    } catch (err) {
+      showNotification(err.message, 'error');
+    } finally {
+      btn.textContent = 'Daxil ol';
+      btn.disabled = false;
+    }
+  }
+
+  async function handleRegister(e) {
+    e.preventDefault();
+    const username = document.getElementById('regUsername').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const confirm = document.getElementById('regPasswordConfirm').value;
+    const btn = document.getElementById('registerBtn');
+
+    if (password !== confirm) {
+      document.getElementById('regPasswordError').style.display = 'block';
+      return;
+    }
+    document.getElementById('regPasswordError').style.display = 'none';
+
+    btn.textContent = 'Qeydiyyat edilir...';
+    btn.disabled = true;
+
+    try {
+      // 🔌 API: POST /api/auth/register
+      // Body: { username, email, password }
+      // Response: { token, user: { id, username, rating, avatar } }
+      // Uğurlu cavabda: localStorage.setItem('token', response.token)
+      // Sonra: window.location.href = '/dashboard.html'
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Qeydiyyat uğursuz oldu');
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      showNotification('Hesabınız yaradıldı!');
+      setTimeout(() => window.location.href = '/dashboard.html', 1000);
+    } catch (err) {
+      showNotification(err.message, 'error');
+    } finally {
+      btn.textContent = 'Qeydiyyatdan keç';
+      btn.disabled = false;
+    }
+  }
+
+  async function handleForgotPassword() {
+    const username = document.getElementById('loginUsername').value.trim();
+    if (!username) {
+      showNotification('E-mail ünvanınızı daxil edin', 'error');
+      return;
+    }
+    // 🔌 API: POST /api/auth/forgot-password
+    // Body: { email: username }
+    // Response: { message: 'Email göndərildi' }
+    showNotification('Şifrə bərpa linki e-mailinizə göndərildi');
+  }
+
+  async function oauthLogin(provider) {
+    // 🔌 API: GET /api/auth/{provider} (google | github)
+    // Backend OAuth redirect URL-ə yönləndirir
+    // Callback: /api/auth/{provider}/callback → { token, user }
+    window.location.href = `/api/auth/${provider}`;
+  }
+</script>
+</body>
+</html>

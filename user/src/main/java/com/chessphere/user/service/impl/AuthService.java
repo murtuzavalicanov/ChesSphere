@@ -1,5 +1,6 @@
 package com.chessphere.user.service.impl;
 
+import com.chessphere.user.dto.CustomUserDetails;
 import com.chessphere.user.dto.JwtResponse;
 import com.chessphere.user.exception.AuthenticationException;
 import com.chessphere.user.util.JwtUtil;
@@ -50,9 +51,9 @@ public class AuthService implements AuthServiceInter {
         } catch (BadCredentialsException e) {
             throw new AuthenticationException("incorrect username or password");
         }
-        final UserDetails userDetails = userDetailService.loadUserByUsername(userRequestDto.getUsername());
+        final CustomUserDetails customUserDetails = userDetailService.loadUserByUsername(userRequestDto.getUsername());
 
-        final String jwt = jwtUtil.generateToken(userDetails);
+        final String jwt = jwtUtil.generateToken(customUserDetails);
         JwtResponse jwtResponse = new JwtResponse(jwt);
         log.info("ActionLog.createAuthenticationToken.end : authenticationRequest {}", userRequestDto);
         return ResponseEntity.ok(jwtResponse);
@@ -60,6 +61,7 @@ public class AuthService implements AuthServiceInter {
 
     @Override
     public void register(UserRequestDto userRequestDto) {
+        log.info("ActionLog.createAuthenticationToken.started : userRequestDto {}", userRequestDto);
         UserEntity userEntity=new UserEntity();
         List<String> roles=new ArrayList<>();
         roles.add(Role.USER);
@@ -69,5 +71,6 @@ public class AuthService implements AuthServiceInter {
         userEntity.setPassword(password);
         userEntity.setRoles(roles);
         userRepo.save(userEntity);
+        log.info("ActionLog.createAuthenticationToken.end : userEntity {}", userEntity);
     }
 }

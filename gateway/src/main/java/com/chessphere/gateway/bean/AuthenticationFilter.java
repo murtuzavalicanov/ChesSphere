@@ -2,6 +2,7 @@ package com.chessphere.gateway.bean;
 
 import com.chessphere.gateway.util.JwtUtil;
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -21,15 +22,19 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Slf4j
 public class AuthenticationFilter implements GlobalFilter, Ordered {
 
-    @Autowired
     private JwtUtil jwtUtil;
+
+    // SecurityConfig-in jwtUtil-i bura set edə bilməsi üçün setter metodu:
+    public void setJwtUtil(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public int getOrder() {
-        return -1; // Spring Security-dən sonra, amma digər filterlərdən əvvəl
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 
     private static final List<String> EXCLUDED_URLS = List.of(
@@ -44,48 +49,83 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     );
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange,
+                             GatewayFilterChain chain) {
+        log.info("AuthenticationFilter filtering.path:"+exchange.getRequest().getPath());
+
         ServerHttpRequest request = exchange.getRequest();
 
-        // Açıq endpoint-lər üçün filtri keç
         String path = request.getURI().getPath();
-        boolean isApiDocRequest = EXCLUDED_URLS.stream().anyMatch(path::contains);
-        if (isApiDocRequest) {
+
+        boolean isExcluded =
+                EXCLUDED_URLS.stream().anyMatch(path::contains);
+
+        if (isExcluded) {
+            log.info("Excluded path:"+path);
             return chain.filter(exchange);
         }
 
-        if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-            return onError(exchange, "Authorization header tapılmadı", HttpStatus.UNAUTHORIZED);
-        }
+        String authHeader =
+                request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-        String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return onError(exchange, "Yanlış token formatı", HttpStatus.UNAUTHORIZED);
+            return onError(
+                    exchange,
+                    "Authorization header tapılmadı",
+                    HttpStatus.UNAUTHORIZED
+            );
         }
-
-        String token = authHeader.substring(7);
 
         try {
+
+            String token = authHeader.substring(7);
+
             Claims claims = jwtUtil.getClaims(token);
+
             String username = claims.getSubject();
-            List<String> roles = claims.get("roles", List.class);
 
-            List<SimpleGrantedAuthority> authorities = roles.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+            String userId = claims.get("userId", String.class);
+            log.info("AuthenticationFilter userId: {}", userId);
 
-            Authentication auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
+            List<String> roles =
+                    claims.get("roles", List.class);
 
-            ServerHttpRequest modifiedRequest = request.mutate()
-                    .header("loggedInUser", username)
-                    .header("roles", String.join(",", roles))
-                    .build();
+            List<SimpleGrantedAuthority> authorities =
+                    roles.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
 
-            return chain.filter(exchange.mutate().request(modifiedRequest).build())
-                    .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
+            Authentication authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            username,
+                            null,
+                            authorities
+                    );
+
+            ServerHttpRequest modifiedRequest =
+                    request.mutate()
+                            .header("X-User-Id", userId)
+                            .header("User-Name", username)
+                            .header("X-Roles", String.join(",", roles))
+                            .build();
+
+            return chain.filter(
+                            exchange.mutate()
+                                    .request(modifiedRequest)
+                                    .build()
+                    )
+                    .contextWrite(
+                            ReactiveSecurityContextHolder
+                                    .withAuthentication(authentication)
+                    );
 
         } catch (Exception e) {
-            return onError(exchange, "Token keçərsizdir: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+
+            return onError(
+                    exchange,
+                    "Token keçərsizdir: " + e.getMessage(),
+                    HttpStatus.UNAUTHORIZED
+            );
         }
     }
 
